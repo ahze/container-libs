@@ -28,6 +28,7 @@ func getMountpoint(id string) string {
 }
 
 func detachUnmount(mountpoint string) error {
-	// FreeBSD's MNT_FORCE is roughly equivalent to MNT_DETACH
-	return unix.Unmount(mountpoint, unix.MNT_FORCE)
+	// FreeBSD has no lazy unmount. A plain unmount leaves a busy mount in
+	// place for its other users; MNT_FORCE would revoke their open files.
+	return unix.Unmount(mountpoint, 0)
 }
